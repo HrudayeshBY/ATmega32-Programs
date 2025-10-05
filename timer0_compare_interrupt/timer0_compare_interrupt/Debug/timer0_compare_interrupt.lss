@@ -1,0 +1,126 @@
+
+timer0_compare_interrupt.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000b2  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  00000106  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  00000106  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000138  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000028  00000000  00000000  00000174  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000584  00000000  00000000  0000019c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000511  00000000  00000000  00000720  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000001eb  00000000  00000000  00000c31  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000048  00000000  00000000  00000e1c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000002ec  00000000  00000000  00000e64  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    00000049  00000000  00000000  00001150  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000018  00000000  00000000  00001199  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 36 00 	jmp	0x6c	; 0x6c <__vector_10>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 4b 00 	call	0x96	; 0x96 <main>
+  64:	0c 94 57 00 	jmp	0xae	; 0xae <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <__vector_10>:
+#define F_CPU 8000000UL
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
+ISR (TIMER0_COMP_vect)
+{
+  6c:	1f 92       	push	r1
+  6e:	0f 92       	push	r0
+  70:	0f b6       	in	r0, 0x3f	; 63
+  72:	0f 92       	push	r0
+  74:	11 24       	eor	r1, r1
+  76:	8f 93       	push	r24
+  78:	9f 93       	push	r25
+	PORTB ^= 0x04;
+  7a:	98 b3       	in	r25, 0x18	; 24
+  7c:	84 e0       	ldi	r24, 0x04	; 4
+  7e:	89 27       	eor	r24, r25
+  80:	88 bb       	out	0x18, r24	; 24
+	TIFR |= (1<<OCF0);
+  82:	88 b7       	in	r24, 0x38	; 56
+  84:	82 60       	ori	r24, 0x02	; 2
+  86:	88 bf       	out	0x38, r24	; 56
+}
+  88:	9f 91       	pop	r25
+  8a:	8f 91       	pop	r24
+  8c:	0f 90       	pop	r0
+  8e:	0f be       	out	0x3f, r0	; 63
+  90:	0f 90       	pop	r0
+  92:	1f 90       	pop	r1
+  94:	18 95       	reti
+
+00000096 <main>:
+int main(void)
+{
+	sei(); // global interrupt enable
+  96:	78 94       	sei
+	DDRB |= 0x0C;
+  98:	87 b3       	in	r24, 0x17	; 23
+  9a:	8c 60       	ori	r24, 0x0C	; 12
+  9c:	87 bb       	out	0x17, r24	; 23
+	TCCR0 = 0x1D; // 1/1024 prescaler ,ctc mode, in toggle mode
+  9e:	8d e1       	ldi	r24, 0x1D	; 29
+  a0:	83 bf       	out	0x33, r24	; 51
+	TIMSK |= (1<<OCIE0); // enabling interrupt on output compare
+  a2:	89 b7       	in	r24, 0x39	; 57
+  a4:	82 60       	ori	r24, 0x02	; 2
+  a6:	89 bf       	out	0x39, r24	; 57
+	OCR0 = 0xC8; // 200 in decimal
+  a8:	88 ec       	ldi	r24, 0xC8	; 200
+  aa:	8c bf       	out	0x3c, r24	; 60
+  ac:	ff cf       	rjmp	.-2      	; 0xac <main+0x16>
+
+000000ae <_exit>:
+  ae:	f8 94       	cli
+
+000000b0 <__stop_program>:
+  b0:	ff cf       	rjmp	.-2      	; 0xb0 <__stop_program>

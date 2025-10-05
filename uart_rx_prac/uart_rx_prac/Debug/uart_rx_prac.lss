@@ -1,0 +1,175 @@
+
+uart_rx_prac.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000dc  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  00000130  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  00000130  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000160  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000038  00000000  00000000  0000019c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   000006ae  00000000  00000000  000001d4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000005ed  00000000  00000000  00000882  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000002c4  00000000  00000000  00000e6f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000054  00000000  00000000  00001134  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000342  00000000  00000000  00001188  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    0000005b  00000000  00000000  000014ca  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000028  00000000  00000000  00001525  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 53 00 	call	0xa6	; 0xa6 <main>
+  64:	0c 94 6c 00 	jmp	0xd8	; 0xd8 <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <uart_init>:
+#include <avr/io.h>
+#include <util/delay.h>
+
+void uart_init()
+{
+	DDRD |= (1<<PD1) | (1<<PD2); //UART transmit pin
+  6c:	81 b3       	in	r24, 0x11	; 17
+  6e:	86 60       	ori	r24, 0x06	; 6
+  70:	81 bb       	out	0x11, r24	; 17
+	DDRD &= ~(1<<PD0); //UART receive pin
+  72:	81 b3       	in	r24, 0x11	; 17
+  74:	8e 7f       	andi	r24, 0xFE	; 254
+  76:	81 bb       	out	0x11, r24	; 17
+	UCSRA |= (1<<TXC); //simply clearing the transmission complete flag
+  78:	8b b1       	in	r24, 0x0b	; 11
+  7a:	80 64       	ori	r24, 0x40	; 64
+  7c:	8b b9       	out	0x0b, r24	; 11
+	UCSRB |= (1<<TXEN) | (1<<RXEN);
+  7e:	8a b1       	in	r24, 0x0a	; 10
+  80:	88 61       	ori	r24, 0x18	; 24
+  82:	8a b9       	out	0x0a, r24	; 10
+	UCSRC |= (1<<URSEL) | (1<<UCSZ0) | (1<<UCSZ1);
+  84:	80 b5       	in	r24, 0x20	; 32
+  86:	86 68       	ori	r24, 0x86	; 134
+  88:	80 bd       	out	0x20, r24	; 32
+	UBRRH &= ~(1<<URSEL);
+  8a:	80 b5       	in	r24, 0x20	; 32
+  8c:	8f 77       	andi	r24, 0x7F	; 127
+  8e:	80 bd       	out	0x20, r24	; 32
+	UBRRL = 0x33;
+  90:	83 e3       	ldi	r24, 0x33	; 51
+  92:	89 b9       	out	0x09, r24	; 9
+  94:	08 95       	ret
+
+00000096 <uart_transmit>:
+}
+
+void uart_transmit(unsigned char data)
+{
+	while (!(UCSRA & (1<<UDRE)));   // Wait until buffer is empty
+  96:	5d 9b       	sbis	0x0b, 5	; 11
+  98:	fe cf       	rjmp	.-4      	; 0x96 <uart_transmit>
+	UDR = data;
+  9a:	8c b9       	out	0x0c, r24	; 12
+  9c:	08 95       	ret
+
+0000009e <uart_receive>:
+}
+
+unsigned char uart_receive()
+{
+	while(!(UCSRA & (1<<RXC)))
+  9e:	5f 9b       	sbis	0x0b, 7	; 11
+  a0:	fe cf       	rjmp	.-4      	; 0x9e <uart_receive>
+	{
+		//wait
+	}
+	return UDR;
+  a2:	8c b1       	in	r24, 0x0c	; 12
+}
+  a4:	08 95       	ret
+
+000000a6 <main>:
+int main(void)
+{
+	uart_init();
+  a6:	0e 94 36 00 	call	0x6c	; 0x6c <uart_init>
+	unsigned char info;
+	while (1)
+	{
+		info = uart_receive();
+  aa:	0e 94 4f 00 	call	0x9e	; 0x9e <uart_receive>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  ae:	2f ef       	ldi	r18, 0xFF	; 255
+  b0:	30 e7       	ldi	r19, 0x70	; 112
+  b2:	92 e0       	ldi	r25, 0x02	; 2
+  b4:	21 50       	subi	r18, 0x01	; 1
+  b6:	30 40       	sbci	r19, 0x00	; 0
+  b8:	90 40       	sbci	r25, 0x00	; 0
+  ba:	e1 f7       	brne	.-8      	; 0xb4 <main+0xe>
+  bc:	00 c0       	rjmp	.+0      	; 0xbe <main+0x18>
+  be:	00 00       	nop
+		_delay_ms(100);
+		uart_transmit(info);
+  c0:	0e 94 4b 00 	call	0x96	; 0x96 <uart_transmit>
+  c4:	2f ef       	ldi	r18, 0xFF	; 255
+  c6:	39 e6       	ldi	r19, 0x69	; 105
+  c8:	88 e1       	ldi	r24, 0x18	; 24
+  ca:	21 50       	subi	r18, 0x01	; 1
+  cc:	30 40       	sbci	r19, 0x00	; 0
+  ce:	80 40       	sbci	r24, 0x00	; 0
+  d0:	e1 f7       	brne	.-8      	; 0xca <main+0x24>
+  d2:	00 c0       	rjmp	.+0      	; 0xd4 <main+0x2e>
+  d4:	00 00       	nop
+  d6:	e9 cf       	rjmp	.-46     	; 0xaa <main+0x4>
+
+000000d8 <_exit>:
+  d8:	f8 94       	cli
+
+000000da <__stop_program>:
+  da:	ff cf       	rjmp	.-2      	; 0xda <__stop_program>

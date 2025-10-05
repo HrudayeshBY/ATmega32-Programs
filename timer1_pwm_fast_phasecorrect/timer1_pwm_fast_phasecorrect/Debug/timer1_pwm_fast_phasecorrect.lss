@@ -1,0 +1,143 @@
+
+timer1_pwm_fast_phasecorrect.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000be  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  00000112  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  00000112  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000144  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000020  00000000  00000000  00000180  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000598  00000000  00000000  000001a0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000508  00000000  00000000  00000738  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   00000219  00000000  00000000  00000c40  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000024  00000000  00000000  00000e5c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    0000030b  00000000  00000000  00000e80  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    0000004c  00000000  00000000  0000118b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000010  00000000  00000000  000011d7  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 36 00 	call	0x6c	; 0x6c <main>
+  64:	0c 94 5d 00 	jmp	0xba	; 0xba <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <main>:
+#include <avr/io.h>
+#include <util/delay.h>
+
+int main(void)
+{
+	DDRD |= (1<<PB5) | (1<<PB4);
+  6c:	81 b3       	in	r24, 0x11	; 17
+  6e:	80 63       	ori	r24, 0x30	; 48
+  70:	81 bb       	out	0x11, r24	; 17
+	DDRD &= ~(1<<PD0) & ~(1<<PD1);
+  72:	81 b3       	in	r24, 0x11	; 17
+  74:	8c 7f       	andi	r24, 0xFC	; 252
+  76:	81 bb       	out	0x11, r24	; 17
+    TCCR1A = 0xA3;
+  78:	83 ea       	ldi	r24, 0xA3	; 163
+  7a:	8f bd       	out	0x2f, r24	; 47
+	//TCCR1B = 0x09;// 10bit fast pwm
+	TCCR1B = 0x01; //10bit phase correct PWM
+  7c:	81 e0       	ldi	r24, 0x01	; 1
+  7e:	8e bd       	out	0x2e, r24	; 46
+	uint16_t a_duty_cycle = 512, b_duty_cycle = 512;
+  80:	20 e0       	ldi	r18, 0x00	; 0
+  82:	32 e0       	ldi	r19, 0x02	; 2
+  84:	80 e0       	ldi	r24, 0x00	; 0
+  86:	92 e0       	ldi	r25, 0x02	; 2
+    while (1) 
+    {
+		if(!(PIND & (1<<PD0)))
+  88:	80 99       	sbic	0x10, 0	; 16
+  8a:	0a c0       	rjmp	.+20     	; 0xa0 <main+0x34>
+		{
+			while(!(PIND & (1<<PD0)));
+  8c:	80 9b       	sbis	0x10, 0	; 16
+  8e:	fe cf       	rjmp	.-4      	; 0x8c <main+0x20>
+			a_duty_cycle += 100;
+  90:	8c 59       	subi	r24, 0x9C	; 156
+  92:	9f 4f       	sbci	r25, 0xFF	; 255
+			b_duty_cycle -= 100;
+  94:	24 56       	subi	r18, 0x64	; 100
+  96:	31 09       	sbc	r19, r1
+			OCR1A = a_duty_cycle;
+  98:	9b bd       	out	0x2b, r25	; 43
+  9a:	8a bd       	out	0x2a, r24	; 42
+			OCR1B = b_duty_cycle;
+  9c:	39 bd       	out	0x29, r19	; 41
+  9e:	28 bd       	out	0x28, r18	; 40
+		}
+		
+		if(!(PIND & (1<<PD1)))
+  a0:	81 99       	sbic	0x10, 1	; 16
+  a2:	f2 cf       	rjmp	.-28     	; 0x88 <main+0x1c>
+		{
+			while(!(PIND & (1<<PD0)));
+  a4:	80 9b       	sbis	0x10, 0	; 16
+  a6:	fe cf       	rjmp	.-4      	; 0xa4 <main+0x38>
+			a_duty_cycle -= 100;
+  a8:	84 56       	subi	r24, 0x64	; 100
+  aa:	91 09       	sbc	r25, r1
+			b_duty_cycle += 100;
+  ac:	2c 59       	subi	r18, 0x9C	; 156
+  ae:	3f 4f       	sbci	r19, 0xFF	; 255
+			OCR1A = a_duty_cycle;
+  b0:	9b bd       	out	0x2b, r25	; 43
+  b2:	8a bd       	out	0x2a, r24	; 42
+			OCR1B = b_duty_cycle;
+  b4:	39 bd       	out	0x29, r19	; 41
+  b6:	28 bd       	out	0x28, r18	; 40
+  b8:	e7 cf       	rjmp	.-50     	; 0x88 <main+0x1c>
+
+000000ba <_exit>:
+  ba:	f8 94       	cli
+
+000000bc <__stop_program>:
+  bc:	ff cf       	rjmp	.-2      	; 0xbc <__stop_program>

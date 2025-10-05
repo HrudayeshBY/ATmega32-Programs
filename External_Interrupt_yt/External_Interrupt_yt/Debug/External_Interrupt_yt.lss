@@ -1,0 +1,281 @@
+
+External_Interrupt_yt.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000198  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  000001ec  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  000001ec  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000021c  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000038  00000000  00000000  00000258  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000752  00000000  00000000  00000290  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000005bd  00000000  00000000  000009e2  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   0000030a  00000000  00000000  00000f9f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  000000a0  00000000  00000000  000012ac  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000346  00000000  00000000  0000134c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    0000025d  00000000  00000000  00001692  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000028  00000000  00000000  000018ef  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 36 00 	jmp	0x6c	; 0x6c <__vector_1>
+   8:	0c 94 5e 00 	jmp	0xbc	; 0xbc <__vector_2>
+   c:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__vector_3>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 98 00 	call	0x130	; 0x130 <main>
+  64:	0c 94 ca 00 	jmp	0x194	; 0x194 <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <__vector_1>:
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+
+ISR(INT0_vect)
+{
+  6c:	1f 92       	push	r1
+  6e:	0f 92       	push	r0
+  70:	0f b6       	in	r0, 0x3f	; 63
+  72:	0f 92       	push	r0
+  74:	11 24       	eor	r1, r1
+  76:	2f 93       	push	r18
+  78:	8f 93       	push	r24
+  7a:	9f 93       	push	r25
+	PORTD |= (1<<PD5);
+  7c:	82 b3       	in	r24, 0x12	; 18
+  7e:	80 62       	ori	r24, 0x20	; 32
+  80:	82 bb       	out	0x12, r24	; 18
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  82:	2f e7       	ldi	r18, 0x7F	; 127
+  84:	8a e1       	ldi	r24, 0x1A	; 26
+  86:	96 e0       	ldi	r25, 0x06	; 6
+  88:	21 50       	subi	r18, 0x01	; 1
+  8a:	80 40       	sbci	r24, 0x00	; 0
+  8c:	90 40       	sbci	r25, 0x00	; 0
+  8e:	e1 f7       	brne	.-8      	; 0x88 <__vector_1+0x1c>
+  90:	00 c0       	rjmp	.+0      	; 0x92 <__vector_1+0x26>
+  92:	00 00       	nop
+	_delay_ms(250);
+	PORTD &= ~(1<<PD5);
+  94:	82 b3       	in	r24, 0x12	; 18
+  96:	8f 7d       	andi	r24, 0xDF	; 223
+  98:	82 bb       	out	0x12, r24	; 18
+  9a:	2f e7       	ldi	r18, 0x7F	; 127
+  9c:	8a e1       	ldi	r24, 0x1A	; 26
+  9e:	96 e0       	ldi	r25, 0x06	; 6
+  a0:	21 50       	subi	r18, 0x01	; 1
+  a2:	80 40       	sbci	r24, 0x00	; 0
+  a4:	90 40       	sbci	r25, 0x00	; 0
+  a6:	e1 f7       	brne	.-8      	; 0xa0 <__vector_1+0x34>
+  a8:	00 c0       	rjmp	.+0      	; 0xaa <__vector_1+0x3e>
+  aa:	00 00       	nop
+	_delay_ms(250);
+}
+  ac:	9f 91       	pop	r25
+  ae:	8f 91       	pop	r24
+  b0:	2f 91       	pop	r18
+  b2:	0f 90       	pop	r0
+  b4:	0f be       	out	0x3f, r0	; 63
+  b6:	0f 90       	pop	r0
+  b8:	1f 90       	pop	r1
+  ba:	18 95       	reti
+
+000000bc <__vector_2>:
+
+ISR(INT1_vect)
+{
+  bc:	1f 92       	push	r1
+  be:	0f 92       	push	r0
+  c0:	0f b6       	in	r0, 0x3f	; 63
+  c2:	0f 92       	push	r0
+  c4:	11 24       	eor	r1, r1
+  c6:	8f 93       	push	r24
+  c8:	9f 93       	push	r25
+	PORTD ^= (1<<PD6);
+  ca:	92 b3       	in	r25, 0x12	; 18
+  cc:	80 e4       	ldi	r24, 0x40	; 64
+  ce:	89 27       	eor	r24, r25
+  d0:	82 bb       	out	0x12, r24	; 18
+}
+  d2:	9f 91       	pop	r25
+  d4:	8f 91       	pop	r24
+  d6:	0f 90       	pop	r0
+  d8:	0f be       	out	0x3f, r0	; 63
+  da:	0f 90       	pop	r0
+  dc:	1f 90       	pop	r1
+  de:	18 95       	reti
+
+000000e0 <__vector_3>:
+
+ISR(INT2_vect)
+{
+  e0:	1f 92       	push	r1
+  e2:	0f 92       	push	r0
+  e4:	0f b6       	in	r0, 0x3f	; 63
+  e6:	0f 92       	push	r0
+  e8:	11 24       	eor	r1, r1
+  ea:	2f 93       	push	r18
+  ec:	8f 93       	push	r24
+  ee:	9f 93       	push	r25
+	PORTD |= (1<<PD7);
+  f0:	82 b3       	in	r24, 0x12	; 18
+  f2:	80 68       	ori	r24, 0x80	; 128
+  f4:	82 bb       	out	0x12, r24	; 18
+  f6:	2f ef       	ldi	r18, 0xFF	; 255
+  f8:	84 e3       	ldi	r24, 0x34	; 52
+  fa:	9c e0       	ldi	r25, 0x0C	; 12
+  fc:	21 50       	subi	r18, 0x01	; 1
+  fe:	80 40       	sbci	r24, 0x00	; 0
+ 100:	90 40       	sbci	r25, 0x00	; 0
+ 102:	e1 f7       	brne	.-8      	; 0xfc <__vector_3+0x1c>
+ 104:	00 c0       	rjmp	.+0      	; 0x106 <__vector_3+0x26>
+ 106:	00 00       	nop
+	_delay_ms(500);
+	PORTD &= ~(1<<PD7);
+ 108:	82 b3       	in	r24, 0x12	; 18
+ 10a:	8f 77       	andi	r24, 0x7F	; 127
+ 10c:	82 bb       	out	0x12, r24	; 18
+ 10e:	2f ef       	ldi	r18, 0xFF	; 255
+ 110:	84 e3       	ldi	r24, 0x34	; 52
+ 112:	9c e0       	ldi	r25, 0x0C	; 12
+ 114:	21 50       	subi	r18, 0x01	; 1
+ 116:	80 40       	sbci	r24, 0x00	; 0
+ 118:	90 40       	sbci	r25, 0x00	; 0
+ 11a:	e1 f7       	brne	.-8      	; 0x114 <__vector_3+0x34>
+ 11c:	00 c0       	rjmp	.+0      	; 0x11e <__vector_3+0x3e>
+ 11e:	00 00       	nop
+	_delay_ms(500);
+}
+ 120:	9f 91       	pop	r25
+ 122:	8f 91       	pop	r24
+ 124:	2f 91       	pop	r18
+ 126:	0f 90       	pop	r0
+ 128:	0f be       	out	0x3f, r0	; 63
+ 12a:	0f 90       	pop	r0
+ 12c:	1f 90       	pop	r1
+ 12e:	18 95       	reti
+
+00000130 <main>:
+
+int main(void)
+{
+	DDRD &= ~(1<<PD2);
+ 130:	81 b3       	in	r24, 0x11	; 17
+ 132:	8b 7f       	andi	r24, 0xFB	; 251
+ 134:	81 bb       	out	0x11, r24	; 17
+	DDRD &= ~(1<<PD3);
+ 136:	81 b3       	in	r24, 0x11	; 17
+ 138:	87 7f       	andi	r24, 0xF7	; 247
+ 13a:	81 bb       	out	0x11, r24	; 17
+	DDRB &= ~(1<<PB2);
+ 13c:	87 b3       	in	r24, 0x17	; 23
+ 13e:	8b 7f       	andi	r24, 0xFB	; 251
+ 140:	87 bb       	out	0x17, r24	; 23
+	DDRD |= (1<<PD4)|(1<<PD5)|(1<<PD6)|(1<<PD7);
+ 142:	81 b3       	in	r24, 0x11	; 17
+ 144:	80 6f       	ori	r24, 0xF0	; 240
+ 146:	81 bb       	out	0x11, r24	; 17
+	
+	
+	//Enabling the interrupts and setting the mode
+	sei();
+ 148:	78 94       	sei
+	GICR |= (1<<INT0)|(1<<INT1)|(1<<INT2);
+ 14a:	8b b7       	in	r24, 0x3b	; 59
+ 14c:	80 6e       	ori	r24, 0xE0	; 224
+ 14e:	8b bf       	out	0x3b, r24	; 59
+	MCUCR |= (1<<ISC00); //INT1 will have low level trigger and INT0 will have both edge triggering
+ 150:	85 b7       	in	r24, 0x35	; 53
+ 152:	81 60       	ori	r24, 0x01	; 1
+ 154:	85 bf       	out	0x35, r24	; 53
+	MCUCSR |= (1<<ISC2); //INT2 will have positive edge triggering
+ 156:	84 b7       	in	r24, 0x34	; 52
+ 158:	80 64       	ori	r24, 0x40	; 64
+ 15a:	84 bf       	out	0x34, r24	; 52
+	
+	
+    while (1) 
+    {
+		PORTD &= ~(1<<PD6);
+ 15c:	82 b3       	in	r24, 0x12	; 18
+ 15e:	8f 7b       	andi	r24, 0xBF	; 191
+ 160:	82 bb       	out	0x12, r24	; 18
+		PORTD |=(1<<PD4);
+ 162:	82 b3       	in	r24, 0x12	; 18
+ 164:	80 61       	ori	r24, 0x10	; 16
+ 166:	82 bb       	out	0x12, r24	; 18
+ 168:	2f ef       	ldi	r18, 0xFF	; 255
+ 16a:	80 e7       	ldi	r24, 0x70	; 112
+ 16c:	92 e0       	ldi	r25, 0x02	; 2
+ 16e:	21 50       	subi	r18, 0x01	; 1
+ 170:	80 40       	sbci	r24, 0x00	; 0
+ 172:	90 40       	sbci	r25, 0x00	; 0
+ 174:	e1 f7       	brne	.-8      	; 0x16e <main+0x3e>
+ 176:	00 c0       	rjmp	.+0      	; 0x178 <main+0x48>
+ 178:	00 00       	nop
+		_delay_ms(100);
+		PORTD &= ~(1<<PD4);
+ 17a:	82 b3       	in	r24, 0x12	; 18
+ 17c:	8f 7e       	andi	r24, 0xEF	; 239
+ 17e:	82 bb       	out	0x12, r24	; 18
+ 180:	2f ef       	ldi	r18, 0xFF	; 255
+ 182:	80 e7       	ldi	r24, 0x70	; 112
+ 184:	92 e0       	ldi	r25, 0x02	; 2
+ 186:	21 50       	subi	r18, 0x01	; 1
+ 188:	80 40       	sbci	r24, 0x00	; 0
+ 18a:	90 40       	sbci	r25, 0x00	; 0
+ 18c:	e1 f7       	brne	.-8      	; 0x186 <main+0x56>
+ 18e:	00 c0       	rjmp	.+0      	; 0x190 <main+0x60>
+ 190:	00 00       	nop
+ 192:	e4 cf       	rjmp	.-56     	; 0x15c <main+0x2c>
+
+00000194 <_exit>:
+ 194:	f8 94       	cli
+
+00000196 <__stop_program>:
+ 196:	ff cf       	rjmp	.-2      	; 0x196 <__stop_program>

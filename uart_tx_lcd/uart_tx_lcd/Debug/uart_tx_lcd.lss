@@ -1,0 +1,235 @@
+
+uart_tx_lcd.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000140  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  00000194  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  00000194  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000001c4  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000058  00000000  00000000  00000200  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   0000087d  00000000  00000000  00000258  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000658  00000000  00000000  00000ad5  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   00000368  00000000  00000000  0000112d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000094  00000000  00000000  00001498  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000366  00000000  00000000  0000152c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    000001b7  00000000  00000000  00001892  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000048  00000000  00000000  00001a49  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 82 00 	call	0x104	; 0x104 <main>
+  64:	0c 94 9e 00 	jmp	0x13c	; 0x13c <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <sendCommand>:
+}
+
+void lcd_clear()
+{
+	sendCommand(0x01);
+	sendCommand(0x80);
+  6c:	85 bb       	out	0x15, r24	; 21
+  6e:	80 e2       	ldi	r24, 0x20	; 32
+  70:	82 bb       	out	0x12, r24	; 18
+  72:	2f ef       	ldi	r18, 0xFF	; 255
+  74:	80 e7       	ldi	r24, 0x70	; 112
+  76:	92 e0       	ldi	r25, 0x02	; 2
+  78:	21 50       	subi	r18, 0x01	; 1
+  7a:	80 40       	sbci	r24, 0x00	; 0
+  7c:	90 40       	sbci	r25, 0x00	; 0
+  7e:	e1 f7       	brne	.-8      	; 0x78 <sendCommand+0xc>
+  80:	00 c0       	rjmp	.+0      	; 0x82 <sendCommand+0x16>
+  82:	00 00       	nop
+  84:	12 ba       	out	0x12, r1	; 18
+  86:	08 95       	ret
+
+00000088 <sendData>:
+  88:	85 bb       	out	0x15, r24	; 21
+  8a:	80 ea       	ldi	r24, 0xA0	; 160
+  8c:	82 bb       	out	0x12, r24	; 18
+  8e:	2f ef       	ldi	r18, 0xFF	; 255
+  90:	80 e7       	ldi	r24, 0x70	; 112
+  92:	92 e0       	ldi	r25, 0x02	; 2
+  94:	21 50       	subi	r18, 0x01	; 1
+  96:	80 40       	sbci	r24, 0x00	; 0
+  98:	90 40       	sbci	r25, 0x00	; 0
+  9a:	e1 f7       	brne	.-8      	; 0x94 <sendData+0xc>
+  9c:	00 c0       	rjmp	.+0      	; 0x9e <sendData+0x16>
+  9e:	00 00       	nop
+  a0:	12 ba       	out	0x12, r1	; 18
+  a2:	08 95       	ret
+
+000000a4 <lcd_init>:
+  a4:	88 e3       	ldi	r24, 0x38	; 56
+  a6:	0e 94 36 00 	call	0x6c	; 0x6c <sendCommand>
+  aa:	81 e0       	ldi	r24, 0x01	; 1
+  ac:	0e 94 36 00 	call	0x6c	; 0x6c <sendCommand>
+  b0:	8e e0       	ldi	r24, 0x0E	; 14
+  b2:	0e 94 36 00 	call	0x6c	; 0x6c <sendCommand>
+  b6:	80 e8       	ldi	r24, 0x80	; 128
+  b8:	0e 94 36 00 	call	0x6c	; 0x6c <sendCommand>
+  bc:	08 95       	ret
+
+000000be <uart_init>:
+	//UCSRA = UCSRA | ~(1<<MPCM) | ~(1<<U2X) | ~(1<<TXC);
+	//UCSRB = UCSRB | (1<<RXEN) | (1<<TXEN);
+	//UCSRC = UCSRC | ~(1<<URSEL) | ~(1<<USBS) | (1<<UCSZ2) | (1<<UCSZ0);
+	//UBRRH = 0x00; UBRRL = 0x33;
+	
+	UCSRA = 0x00;UCSRB = 0x18;UCSRC = 0x06;
+  be:	1b b8       	out	0x0b, r1	; 11
+  c0:	88 e1       	ldi	r24, 0x18	; 24
+  c2:	8a b9       	out	0x0a, r24	; 10
+  c4:	86 e0       	ldi	r24, 0x06	; 6
+  c6:	80 bd       	out	0x20, r24	; 32
+	UBRRH = 0x00;UBRRL = 0x33;
+  c8:	10 bc       	out	0x20, r1	; 32
+  ca:	83 e3       	ldi	r24, 0x33	; 51
+  cc:	89 b9       	out	0x09, r24	; 9
+  ce:	08 95       	ret
+
+000000d0 <transmit>:
+}
+
+void transmit(char data)
+{
+	UDR = data;
+  d0:	8c b9       	out	0x0c, r24	; 12
+	while((UCSRA & 0x40) == 0)
+  d2:	5e 9b       	sbis	0x0b, 6	; 11
+  d4:	fe cf       	rjmp	.-4      	; 0xd2 <transmit+0x2>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  d6:	2f ef       	ldi	r18, 0xFF	; 255
+  d8:	80 e7       	ldi	r24, 0x70	; 112
+  da:	92 e0       	ldi	r25, 0x02	; 2
+  dc:	21 50       	subi	r18, 0x01	; 1
+  de:	80 40       	sbci	r24, 0x00	; 0
+  e0:	90 40       	sbci	r25, 0x00	; 0
+  e2:	e1 f7       	brne	.-8      	; 0xdc <transmit+0xc>
+  e4:	00 c0       	rjmp	.+0      	; 0xe6 <transmit+0x16>
+  e6:	00 00       	nop
+  e8:	08 95       	ret
+
+000000ea <receive>:
+}
+
+char receive()
+{
+	
+	while((UCSRA & 0x80) == 0)
+  ea:	5f 9b       	sbis	0x0b, 7	; 11
+  ec:	fe cf       	rjmp	.-4      	; 0xea <receive>
+	{
+		// receiving data
+	}
+	char data = UDR;
+  ee:	8c b1       	in	r24, 0x0c	; 12
+  f0:	2f ef       	ldi	r18, 0xFF	; 255
+  f2:	30 e7       	ldi	r19, 0x70	; 112
+  f4:	92 e0       	ldi	r25, 0x02	; 2
+  f6:	21 50       	subi	r18, 0x01	; 1
+  f8:	30 40       	sbci	r19, 0x00	; 0
+  fa:	90 40       	sbci	r25, 0x00	; 0
+  fc:	e1 f7       	brne	.-8      	; 0xf6 <receive+0xc>
+  fe:	00 c0       	rjmp	.+0      	; 0x100 <receive+0x16>
+ 100:	00 00       	nop
+	_delay_ms(100);
+	
+	return data;
+}
+ 102:	08 95       	ret
+
+00000104 <main>:
+int main(void)
+{
+  DDRC = 0xFF;DDRD = 0xE2;
+ 104:	8f ef       	ldi	r24, 0xFF	; 255
+ 106:	84 bb       	out	0x14, r24	; 20
+ 108:	82 ee       	ldi	r24, 0xE2	; 226
+ 10a:	81 bb       	out	0x11, r24	; 17
+  PORTD = 0x00; PORTC = 0x00;
+ 10c:	12 ba       	out	0x12, r1	; 18
+ 10e:	15 ba       	out	0x15, r1	; 21
+  lcd_init();
+ 110:	0e 94 52 00 	call	0xa4	; 0xa4 <lcd_init>
+  uart_init();
+ 114:	0e 94 5f 00 	call	0xbe	; 0xbe <uart_init>
+  char incomingData;
+  
+    while (1) 
+    {
+		//lcd_clear();
+		incomingData = receive();
+ 118:	0e 94 75 00 	call	0xea	; 0xea <receive>
+ 11c:	c8 2f       	mov	r28, r24
+		sendData(incomingData);
+ 11e:	0e 94 44 00 	call	0x88	; 0x88 <sendData>
+		transmit(incomingData);
+ 122:	8c 2f       	mov	r24, r28
+ 124:	0e 94 68 00 	call	0xd0	; 0xd0 <transmit>
+ 128:	2f ef       	ldi	r18, 0xFF	; 255
+ 12a:	83 ed       	ldi	r24, 0xD3	; 211
+ 12c:	90 e3       	ldi	r25, 0x30	; 48
+ 12e:	21 50       	subi	r18, 0x01	; 1
+ 130:	80 40       	sbci	r24, 0x00	; 0
+ 132:	90 40       	sbci	r25, 0x00	; 0
+ 134:	e1 f7       	brne	.-8      	; 0x12e <main+0x2a>
+ 136:	00 c0       	rjmp	.+0      	; 0x138 <main+0x34>
+ 138:	00 00       	nop
+ 13a:	ee cf       	rjmp	.-36     	; 0x118 <main+0x14>
+
+0000013c <_exit>:
+ 13c:	f8 94       	cli
+
+0000013e <__stop_program>:
+ 13e:	ff cf       	rjmp	.-2      	; 0x13e <__stop_program>

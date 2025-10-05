@@ -1,0 +1,265 @@
+
+uart_string_rx_tx.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000146  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  0000019a  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  0000019a  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000001cc  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000038  00000000  00000000  00000208  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000717  00000000  00000000  00000240  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 0000062f  00000000  00000000  00000957  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000002f1  00000000  00000000  00000f86  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000064  00000000  00000000  00001278  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000362  00000000  00000000  000012dc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    0000013e  00000000  00000000  0000163e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000028  00000000  00000000  0000177c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 53 00 	call	0xa6	; 0xa6 <main>
+  64:	0c 94 a1 00 	jmp	0x142	; 0x142 <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <transmit>:
+#include <avr/io.h>
+#include <util/delay.h>
+
+void transmit(char data)
+{
+	UDR = data;
+  6c:	8c b9       	out	0x0c, r24	; 12
+	while((UCSRA & 0x40) == 0)
+  6e:	5e 9b       	sbis	0x0b, 6	; 11
+  70:	fe cf       	rjmp	.-4      	; 0x6e <transmit+0x2>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  72:	2f ef       	ldi	r18, 0xFF	; 255
+  74:	80 e7       	ldi	r24, 0x70	; 112
+  76:	92 e0       	ldi	r25, 0x02	; 2
+  78:	21 50       	subi	r18, 0x01	; 1
+  7a:	80 40       	sbci	r24, 0x00	; 0
+  7c:	90 40       	sbci	r25, 0x00	; 0
+  7e:	e1 f7       	brne	.-8      	; 0x78 <transmit+0xc>
+  80:	00 c0       	rjmp	.+0      	; 0x82 <transmit+0x16>
+  82:	00 00       	nop
+  84:	08 95       	ret
+
+00000086 <receive>:
+	_delay_ms(100);
+}
+
+char receive()
+{
+	while((UCSRA & 0x80) == 0)
+  86:	5f 9b       	sbis	0x0b, 7	; 11
+  88:	fe cf       	rjmp	.-4      	; 0x86 <receive>
+	{
+		//wait
+	}
+	char receivedData = UDR;
+  8a:	8c b1       	in	r24, 0x0c	; 12
+	return receivedData;
+}
+  8c:	08 95       	ret
+
+0000008e <uart_init>:
+
+void uart_init()
+{
+	DDRD = 0x20;
+  8e:	80 e2       	ldi	r24, 0x20	; 32
+  90:	81 bb       	out	0x11, r24	; 17
+	PORTD = 0x00;
+  92:	12 ba       	out	0x12, r1	; 18
+	UCSRA = 0x00; UCSRB = 0x18; UCSRC = 0x06;
+  94:	1b b8       	out	0x0b, r1	; 11
+  96:	88 e1       	ldi	r24, 0x18	; 24
+  98:	8a b9       	out	0x0a, r24	; 10
+  9a:	86 e0       	ldi	r24, 0x06	; 6
+  9c:	80 bd       	out	0x20, r24	; 32
+	UBRRH = 0x00; UBRRL = 0x33; //sets baud rate as 9600
+  9e:	10 bc       	out	0x20, r1	; 32
+  a0:	83 e3       	ldi	r24, 0x33	; 51
+  a2:	89 b9       	out	0x09, r24	; 9
+  a4:	08 95       	ret
+
+000000a6 <main>:
+}
+int main(void)
+{
+  a6:	cf 93       	push	r28
+  a8:	df 93       	push	r29
+  aa:	cd b7       	in	r28, 0x3d	; 61
+  ac:	de b7       	in	r29, 0x3e	; 62
+  ae:	c4 56       	subi	r28, 0x64	; 100
+  b0:	d1 09       	sbc	r29, r1
+  b2:	0f b6       	in	r0, 0x3f	; 63
+  b4:	f8 94       	cli
+  b6:	de bf       	out	0x3e, r29	; 62
+  b8:	0f be       	out	0x3f, r0	; 63
+  ba:	cd bf       	out	0x3d, r28	; 61
+	char incomingString[100];
+	uart_init();
+  bc:	0e 94 47 00 	call	0x8e	; 0x8e <uart_init>
+	int i = 0;
+  c0:	00 e0       	ldi	r16, 0x00	; 0
+  c2:	10 e0       	ldi	r17, 0x00	; 0
+    
+    while (1) 
+    {
+		do 
+		{
+			data = receive();
+  c4:	0e 94 43 00 	call	0x86	; 0x86 <receive>
+			if(data != '\r')
+  c8:	8d 30       	cpi	r24, 0x0D	; 13
+  ca:	41 f0       	breq	.+16     	; 0xdc <main+0x36>
+			{
+				incomingString[i] = data;
+  cc:	e1 e0       	ldi	r30, 0x01	; 1
+  ce:	f0 e0       	ldi	r31, 0x00	; 0
+  d0:	ec 0f       	add	r30, r28
+  d2:	fd 1f       	adc	r31, r29
+  d4:	e0 0f       	add	r30, r16
+  d6:	f1 1f       	adc	r31, r17
+  d8:	80 83       	st	Z, r24
+  da:	07 c0       	rjmp	.+14     	; 0xea <main+0x44>
+			}
+			else
+			{
+				incomingString[i] = '\0';
+  dc:	e1 e0       	ldi	r30, 0x01	; 1
+  de:	f0 e0       	ldi	r31, 0x00	; 0
+  e0:	ec 0f       	add	r30, r28
+  e2:	fd 1f       	adc	r31, r29
+  e4:	e0 0f       	add	r30, r16
+  e6:	f1 1f       	adc	r31, r17
+  e8:	10 82       	st	Z, r1
+			}
+			i++;
+  ea:	0f 5f       	subi	r16, 0xFF	; 255
+  ec:	1f 4f       	sbci	r17, 0xFF	; 255
+			
+		} while (data != '\r');
+  ee:	8d 30       	cpi	r24, 0x0D	; 13
+  f0:	49 f7       	brne	.-46     	; 0xc4 <main+0x1e>
+  f2:	00 e0       	ldi	r16, 0x00	; 0
+  f4:	10 e0       	ldi	r17, 0x00	; 0
+  f6:	0d c0       	rjmp	.+26     	; 0x112 <main+0x6c>
+		
+		i = 0;
+		while(incomingString[i] != '\0')
+		{
+			transmit(incomingString[i]);
+  f8:	0e 94 36 00 	call	0x6c	; 0x6c <transmit>
+  fc:	2f ef       	ldi	r18, 0xFF	; 255
+  fe:	80 e7       	ldi	r24, 0x70	; 112
+ 100:	92 e0       	ldi	r25, 0x02	; 2
+ 102:	21 50       	subi	r18, 0x01	; 1
+ 104:	80 40       	sbci	r24, 0x00	; 0
+ 106:	90 40       	sbci	r25, 0x00	; 0
+ 108:	e1 f7       	brne	.-8      	; 0x102 <main+0x5c>
+ 10a:	00 c0       	rjmp	.+0      	; 0x10c <main+0x66>
+ 10c:	00 00       	nop
+			_delay_ms(100);
+			i++;
+ 10e:	0f 5f       	subi	r16, 0xFF	; 255
+ 110:	1f 4f       	sbci	r17, 0xFF	; 255
+			i++;
+			
+		} while (data != '\r');
+		
+		i = 0;
+		while(incomingString[i] != '\0')
+ 112:	e1 e0       	ldi	r30, 0x01	; 1
+ 114:	f0 e0       	ldi	r31, 0x00	; 0
+ 116:	ec 0f       	add	r30, r28
+ 118:	fd 1f       	adc	r31, r29
+ 11a:	e0 0f       	add	r30, r16
+ 11c:	f1 1f       	adc	r31, r17
+ 11e:	80 81       	ld	r24, Z
+ 120:	81 11       	cpse	r24, r1
+ 122:	ea cf       	rjmp	.-44     	; 0xf8 <main+0x52>
+ 124:	80 e0       	ldi	r24, 0x00	; 0
+ 126:	90 e0       	ldi	r25, 0x00	; 0
+ 128:	08 c0       	rjmp	.+16     	; 0x13a <main+0x94>
+			i++;
+		}
+		
+		for(int j =0;j<100;j++)
+		{
+			incomingString[i] = '\0';
+ 12a:	e1 e0       	ldi	r30, 0x01	; 1
+ 12c:	f0 e0       	ldi	r31, 0x00	; 0
+ 12e:	ec 0f       	add	r30, r28
+ 130:	fd 1f       	adc	r31, r29
+ 132:	e0 0f       	add	r30, r16
+ 134:	f1 1f       	adc	r31, r17
+ 136:	10 82       	st	Z, r1
+			transmit(incomingString[i]);
+			_delay_ms(100);
+			i++;
+		}
+		
+		for(int j =0;j<100;j++)
+ 138:	01 96       	adiw	r24, 0x01	; 1
+ 13a:	84 36       	cpi	r24, 0x64	; 100
+ 13c:	91 05       	cpc	r25, r1
+ 13e:	ac f3       	brlt	.-22     	; 0x12a <main+0x84>
+ 140:	c1 cf       	rjmp	.-126    	; 0xc4 <main+0x1e>
+
+00000142 <_exit>:
+ 142:	f8 94       	cli
+
+00000144 <__stop_program>:
+ 144:	ff cf       	rjmp	.-2      	; 0x144 <__stop_program>
